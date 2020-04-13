@@ -32,7 +32,7 @@ jsoncpp::read("data.json");
 3) Initialize a json object in code
 ```cpp
 jsoncpp::json d = {
-	{ "employees", {
+    { "employees", {
     	{
         	{ "name", "Michael" },
             { "age", 32 },
