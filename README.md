@@ -44,7 +44,7 @@ jsoncpp::json d = {
 /*
 This would translate to in JSON:
 {
-	"employees": [
+    "employees": [
     	{
         	"name": "Michael",
             "age": 32,
@@ -72,7 +72,7 @@ jsoncpp::json b = true;
 
 // lists
 jsoncpp::json l = {
-	5,
+    5,
     "hello",
     false,
     {
@@ -84,7 +84,7 @@ jsoncpp::json l = {
 /*
 This would translate to in JSON:
 [
-	5,
+    5,
     "hello",
     false,
     [
@@ -96,7 +96,7 @@ This would translate to in JSON:
 
 // objects (dictionaries)
 jsoncpp::json o = {
-	{ "employees", {
+    { "employees", {
     	{
         	{ "name", "Michael" },
             { "age", 32 },
@@ -138,7 +138,7 @@ jsoncpp::json d = {
 };
 d["name"] = "Stalin";
 d["age"] = INT_MAX;
-//d = { "name": "Michael", "age": 2147483647 }
+//d = { "name": "Stalin", "age": 2147483647 }
 ```
 
 ### outputting data
@@ -162,9 +162,9 @@ b.val<bool>(); // true
 To get the string representation of a json class:
 ```cpp
 jsoncpp::json o = {
-	{ "employees", {
+    { "employees", {
     	{
-        	{ "name", "Michael" },
+            { "name", "Michael" },
             { "age", 32 },
             { "manager", true }
         }
@@ -178,7 +178,7 @@ o.dump(); // {"employees":[{"name":"Michael","age":32,"manager":true}]}
 o.dump(4); // 4 is the tab spacing
 /*
 {
-	"employees": [
+    "employees": [
     	{
         	"name": "Michael",
             "age": 32,
