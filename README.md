@@ -112,7 +112,7 @@ Using the operators + and += are defined for strings, numbers, and lists.
 jsoncpp::json s = "Hello,";
 jsoncpp::json s2 = " world";
 jsoncpp::json s3 = s + s2;
-s3 += "!"; // s3 = "Hello, worlds"
+s3 += "!"; // s3 = "Hello, world!"
 
 // numbers
 jsoncpp::json d = 0;
