@@ -36,7 +36,8 @@ jsoncpp::json d = {
     	{
         	{ "name", "Michael" },
             { "age", 32 },
-            { "manager", true }
+            { "manager", true },
+            { "SSN", jsoncpp::null }
         }
     }}
 };
@@ -59,6 +60,9 @@ This would translate to in JSON:
 ### editing data
 You can use the assignment operator to set values.
 ```cpp
+// null values
+jsoncpp::json n = jsoncpp::null;
+
 // strings
 jsoncpp::json s = "This is a string";
 
@@ -166,13 +170,14 @@ jsoncpp::json o = {
     	{
             { "name", "Michael" },
             { "age", 32 },
-            { "manager", true }
+            { "manager", true },
+            { "SSN", null }
         }
     }}
 };
 
 // to get the string without spacing
-o.dump(); // {"employees":[{"name":"Michael","age":32,"manager":true}]}
+o.dump(); // {"employees":[{"name":"Michael","age":32,"manager":true,"SSN":null}]}
 
 // to pretty print
 o.dump(4); // 4 is the tab spacing
@@ -182,7 +187,8 @@ o.dump(4); // 4 is the tab spacing
     	{
         	"name": "Michael",
             "age": 32,
-            "manager": true
+            "manager": true,
+            "SSN": null
         }
     ]
 }
