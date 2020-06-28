@@ -151,12 +151,19 @@ To access the value of a json class:
 // string
 jsoncpp::json s = "Hello";
 s.val<std::string>(); // "Hello";
+s.val<const char*>(); // "Hello";
 
-// number
-jsoncpp::json n = 3.1415;
+// float
+jsoncpp::json f = 3.1415;
 n.val<double>(); // 3.1415
-n.val<int>(); // 3
 n.val<float>(); // 3.1415f
+n.val<int>(); // 3
+
+// int
+jsoncpp::json i = 3;
+n.val<int>(); // 3
+n.val<float>(); // 3.0f
+n.val<double>(); // 3.0
 
 // bool
 jsoncpp::json b = true;

@@ -24,7 +24,8 @@ namespace jsoncpp {
 	*/
 	enum class json_type {
 		json_string,
-		json_num,
+		json_float,
+		json_int,
 		json_bool,
 		json_list,
 		json_object,
@@ -63,12 +64,12 @@ namespace jsoncpp {
 			: type(json_type::json_string), s_val(val) {}
 		json(const char* val)														// string
 			: type(json_type::json_string), s_val(val) {}
-		json(double val)															// number
-			: type(json_type::json_num), n_val(val) {}
-		json(int val)																// number
-			: type(json_type::json_num), n_val(val) {}
-		json(float val)																// number
-			: type(json_type::json_num), n_val(val) {}
+		json(double val)															// float
+			: type(json_type::json_float), f_val(val) {}
+		json(float val)																// float
+			: type(json_type::json_float), f_val(val) {}
+		json(int val)																// integer
+			: type(json_type::json_int), i_val(val) {}
 		json(bool val)																// boolean
 			: type(json_type::json_bool), b_val(val) {}
 		json(std::vector<json> val)													// list
@@ -87,9 +88,9 @@ namespace jsoncpp {
 		// set methods
 		void operator=(std::string val) { type = json_type::json_string; s_val = val; }						// string
 		void operator=(const char* val) { type = json_type::json_string; s_val = val; }						// string
-		void operator=(double val) { type = json_type::json_num; n_val = val; }								// number
-		void operator=(int val) { type = json_type::json_num; n_val = val; }								// number
-		void operator=(float val) { type = json_type::json_num; n_val = val; }								// number
+		void operator=(double val) { type = json_type::json_float; f_val = val; }							// float
+		void operator=(float val) { type = json_type::json_float; f_val = val; }							// float
+		void operator=(int val) { type = json_type::json_int; i_val = val; }								// int
 		void operator=(bool val) { type = json_type::json_bool; b_val = val; }								// boolean
 		void operator=(std::vector<json> val) { type = json_type::json_list; l_val = val; }					// list
 		void operator=(std::map<std::string, json> val) { type = json_type::json_object; o_val = val; }		// map
@@ -142,25 +143,36 @@ namespace jsoncpp {
 			switch (type) {
 			case json_type::json_string:
 				// string addition
-				switch (val.type) {
-				case json_type::json_string:
+				if (val.type == json_type::json_string) {
 					s_val += val.s_val;
-					break;
-				default:
+				}
+				else {
 					// TODO: throw error
-					break;
-				};
+				}
 				break;
-			case json_type::json_num:
+			case json_type::json_float:
 				// number addition
-				switch (val.type) {
-				case json_type::json_num:
-					n_val += val.n_val;
-					break;
-				default:
+				if (val.type == json_type::json_float) {
+					f_val += val.f_val;
+				}
+				else if (val.type == json_type::json_int) {
+					f_val += val.i_val;
+				}
+				else {
 					// TODO: throw error
-					break;
-				};
+				}
+				break;
+			case json_type::json_int:
+				// number addition
+				if (val.type == json_type::json_int) {
+					i_val += val.i_val;
+				}
+				else if (val.type == json_type::json_float) {
+					i_val += val.f_val;
+				}
+				else {
+					// TODO: throw error
+				}
 				break;
 			case json_type::json_list:
 				// list addition
@@ -213,9 +225,15 @@ namespace jsoncpp {
 		template <typename T> T val() { return NULL; }
 		template <> std::string val<std::string>() { return s_val; }
 		template <> const char* val<const char*>() { return s_val.c_str(); }
-		template <> double val<double>() { return n_val; }
-		template <> int val<int>() { return n_val; }
-		template <> float val<float>() { return n_val; }
+		template <> double val<double>() {
+			return type == json_type::json_float ? f_val : i_val;
+		}
+		template <> float val<float>() {
+			return type == json_type::json_float ? f_val : i_val;
+		}
+		template <> int val<int>() {
+			return type == json_type::json_int ? i_val : f_val;
+		}
 		template <> bool val<bool>() { return b_val; }
 
 		// returns type as string
@@ -223,8 +241,10 @@ namespace jsoncpp {
 			switch (type) {
 			case json_type::json_string:
 				return "string";
-			case json_type::json_num:
-				return "number";
+			case json_type::json_float:
+				return "float";
+			case json_type::json_int:
+				return "int";
 			case json_type::json_bool:
 				return "bool";
 			case json_type::json_list:
@@ -241,7 +261,8 @@ namespace jsoncpp {
 			data values
 		*/
 		std::string s_val;							// string
-		double n_val;								// number
+		float f_val;								// float
+		int i_val;									// int
 		bool b_val;									// boolean
 		std::vector<json> l_val;					// list
 		std::map<std::string, json> o_val;			// object
@@ -370,9 +391,13 @@ namespace jsoncpp {
 				// output string val
 				ret << '"' << s_val << '"';
 				break;
-			case json_type::json_num:
-				// output numerical val
-				ret << n_val;
+			case json_type::json_float:
+				// output float val
+				ret << f_val;
+				break;
+			case json_type::json_int:
+				// output integer val
+				ret << i_val;
 				break;
 			case json_type::json_bool:
 				// output boolean value (as true or false) with macros
@@ -537,7 +562,14 @@ namespace jsoncpp {
 		}
 		else if (isNum(c)) {
 			// number
-			return json(std::atof(val.c_str()));
+			if (strContains(val, '.')) {
+				// float
+				return json(std::atof(val.c_str()));
+			}
+			else {
+				// integer
+				return json(std::atoi(val.c_str()));
+			}
 		}
 		else if (c == 't') {
 			// might be true
