@@ -31,20 +31,20 @@ namespace jsoncpp {
 		json_null
 	};
 
-	json_type null = json_type::json_null;
+	const json_type null = json_type::json_null;
 
 	/*
 		utility function callbacks
 	*/
-	bool firstAndLastMatch(std::string str, char first, char last);
-	bool strContains(std::string str, char c);
-	bool isNum(char c);
-	bool isEmpty(char c);
-	bool writeFile(const char* filename, std::string content);
-	std::string readFile(const char* filename);
-	json parse(std::string val);
-	json read(const char* filename);
-	bool write(const char* filename, json val, int tabSpace = 0);
+	inline bool firstAndLastMatch(std::string str, char first, char last);
+	inline bool strContains(std::string str, char c);
+	inline bool isNum(char c);
+	inline bool isEmpty(char c);
+	inline bool writeFile(const char* filename, std::string content);
+	inline std::string readFile(const char* filename);
+	inline json parse(std::string val);
+	inline json read(const char* filename);
+	inline bool write(const char* filename, json val, int tabSpace = 0);
 
 	/*
 		main class
@@ -236,15 +236,15 @@ namespace jsoncpp {
 			}
 		}
 
+	private:
 		/*
 			data values
 		*/
-	private:
 		std::string s_val;							// string
 		double n_val;								// number
 		bool b_val;									// boolean
-		std::vector<json> l_val;				// list
-		std::map<std::string, json> o_val;		// object
+		std::vector<json> l_val;					// list
+		std::map<std::string, json> o_val;			// object
 
 	/*
 		parsing methods
@@ -454,6 +454,7 @@ namespace jsoncpp {
 
 			return ret.str();
 		}
+
 	public:
 		// public stringify method
 		std::string dump(int tabSpace = 0) {
@@ -477,27 +478,27 @@ namespace jsoncpp {
 	*/
 
 	// determines if first and last character of a string match the parameters
-	bool firstAndLastMatch(std::string str, char first, char last) {
+	inline bool firstAndLastMatch(std::string str, char first, char last) {
 		return str[0] == first && str[str.length() - 1] == last;
 	}
 
 	// determines if string contains a character
-	bool strContains(std::string str, char c) {
+	inline bool strContains(std::string str, char c) {
 		return str.find(c) != std::string::npos;
 	}
 
 	// determines if character is a digit, decimal point, or negative sign
-	bool isNum(char c) {
+	inline bool isNum(char c) {
 		return strContains("0123456789.-", c);
 	}
 
 	// determines if character is whitespace
-	bool isEmpty(char c) {
+	inline bool isEmpty(char c) {
 		return c == ' ' || c == '\n' || c == '\t';
 	}
 
 	// writes string to specified file
-	bool writeFile(const char* filename, std::string content) {
+	inline bool writeFile(const char* filename, std::string content) {
 		std::ofstream file(filename);
 
 		if (file.is_open()) {
@@ -510,7 +511,7 @@ namespace jsoncpp {
 	}
 
 	// returns contents as string from specified file
-	std::string readFile(const char* filename) {
+	inline std::string readFile(const char* filename) {
 		std::ifstream file(filename);
 		std::string ret = "";
 
@@ -526,7 +527,7 @@ namespace jsoncpp {
 	}
 
 	// parse json object
-	json parse(std::string val) {
+	inline json parse(std::string val) {
 		// identify type based on first character
 		char c = val[0];
 
@@ -630,12 +631,12 @@ namespace jsoncpp {
 	}
 
 	// read json object from file
-	json read(const char* filename) {
+	inline json read(const char* filename) {
 		return parse(readFile(filename));
 	}
 
 	// write json object to file
-	bool write(const char* filename, json val, int tabSpace) {
+	inline bool write(const char* filename, json val, int tabSpace) {
 		return writeFile(filename, val.dump(tabSpace));
 	}
 }
