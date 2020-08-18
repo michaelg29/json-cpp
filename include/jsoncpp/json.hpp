@@ -138,6 +138,31 @@ namespace jsoncpp {
 			}
 		}
 
+		// equality operator
+		friend bool operator==(const json& lhs, const json& rhs) {
+			// test type
+			if (lhs.type != rhs.type) {
+				return false;
+			}
+
+			switch (lhs.type) {
+			case json_type::json_string:
+				return lhs.s_val == rhs.s_val;
+			case json_type::json_float:
+				return lhs.f_val == rhs.f_val;
+			case json_type::json_int:
+				return lhs.i_val == rhs.i_val;
+			case json_type::json_bool:
+				return lhs.b_val == rhs.b_val;
+			case json_type::json_list:
+				return lhs.l_val == rhs.l_val;
+			case json_type::json_object:
+				return lhs.o_val == rhs.o_val;
+			case json_type::json_null:
+				return true; // both are null
+			}
+		}
+
 		// add values
 		json& operator+=(const json& val) {
 			switch (type) {
@@ -196,6 +221,35 @@ namespace jsoncpp {
 			}
 			else {
 				// TODO: throw error
+			}
+		}
+
+		// remove object at key in dictionary
+		bool eraseKey(std::string key) {
+			if (type == json_type::json_object) {
+				return o_val.erase(key) != 0;
+			}
+			else {
+				// TODO: throw error
+				return false;
+			}
+		}
+
+		// remove object from list
+		bool erase(json item) {
+			if (type == json_type::json_list) {
+				unsigned int size = l_val.size();
+				for (int i = 0; i < size; i++) {
+					if (l_val[i] == item) {
+						l_val.erase(l_val.begin() + i);
+						return true;
+					}
+				}
+				return false;
+			}
+			else {
+				// TODO: throw error
+				return false;
 			}
 		}
 
